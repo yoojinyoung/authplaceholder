@@ -1,15 +1,24 @@
 import fastifyCookie from "@fastify/cookie";
+import fastifyMiddie from "@fastify/middie";
 import fastify from "fastify";
+import middleware from "./middleware";
 import router from "./router";
 
-const app = fastify({ logger: true });
+async function main() {
+  const app = fastify({ logger: true });
 
-app.register(fastifyCookie);
-app.register(router);
+  await app.register(fastifyMiddie);
+  app.register(fastifyCookie);
+  app.register(router);
 
-app.listen({ port: 3000 }, (err) => {
-  if (err) {
-    app.log.error(err);
-    process.exit(1);
-  }
-});
+  app.use(middleware);
+
+  app.listen({ port: 3000 }, (err) => {
+    if (err) {
+      app.log.error(err);
+      process.exit(1);
+    }
+  });
+}
+
+main();
